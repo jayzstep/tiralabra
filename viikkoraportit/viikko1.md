@@ -15,5 +15,5 @@ Katselin Youtubesta videoita neuroverkoista (3b1b + sekalaisia). Luin myös Mich
 ## Perjantai 4h
 Lisää kirjan lukemista ja googlailua. Määrittelydokumentin kirjoittamista ja siihen tiedonkeruuta.
 
-## Lauantai 4h
-Määrittelydokumentin viimeistely, Github-repo, labtool, viikkoraportti. Kirjan lukemista. Numpyn ja Poetryn tutkailua+ projektin alustus. Latasin CSV-filet ja asensin Pandas kirjaston. Gradient descent ja siihen liittyvä matematiikka ei vielä aukea yksityiskohtien tasolla, ymmärrän kuitenkin pääpiirteittäin mistä on kyse. Seuraavaksi alan rakentelemaan koodia Michael Nielsenin kirjan esimerkin pohjalta.
+## Lauantai 5h
+Määrittelydokumentin viimeistely, Github-repo, labtool, viikkoraportti. Kirjan lukemista. Numpyn ja Poetryn tutkailua+ projektin alustus. Latasin CSV-filet ja asensin Pandas kirjaston. Gradient descent ja siihen liittyvä matematiikka ei vielä aukea yksityiskohtien tasolla, ymmärrän kuitenkin pääpiirteittäin mistä on kyse. Seuraavaksi alan rakentelemaan koodia Michael Nielsenin kirjan esimerkin pohjalta. Täytyy myös tutustua Heli Tuomisen materiaaliin tarkemmin.
