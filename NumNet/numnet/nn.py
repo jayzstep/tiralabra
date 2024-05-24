@@ -26,11 +26,7 @@ class NN():
         return a
 
     def train(self, training_data, epochs, learning_rate, test_data=None):
-        # training_data (x, y) x = data, y = toivottu tulos
-        print(f"training dataa: {len(training_data)}")
-        print(f"ensimmäinen data pituus: {len(training_data[0][0])}")
-        training_data = training_data[:2]
-
+        counter = 0
         for sample in training_data:
             x, y = sample
             a = x
@@ -50,7 +46,6 @@ class NN():
             zs.append(z)
             a = self.activation(z)
             all_as.append(a)
-            print(f"len all_as: {len(all_as)}")
 
             # backward
             # output layer:
@@ -61,20 +56,22 @@ class NN():
             nabla_w2 = np.dot(d2, dz2.T) # 30x10
             nabla_b2 = d2 # 10x1
 
-            print(f"nabla_w2 shape: {nabla_w2.shape}, w2 shape: {w2.shape}")
-
             # hidden layer:
             d1 = np.dot(w2.T, d2) * self.activation_derivative(z[-2])
             dz1 = x
             nabla_w1 = np.dot(d1, dz1.T)
+            nabla_b1 = d1
+
+            # update weights/biases
+            self.w[0] -= learning_rate * nabla_w1
+            self.w[1] -= learning_rate * nabla_w2
+
+            self.b[0] -= learning_rate * nabla_b1
+            self.b[1] -= learning_rate * nabla_b2
             
-
-
-
-
-
-            
-
+            counter += 1
+            if counter % 1000 == 0:
+                print(f"Epoch {counter/1000}: {self.evaluate(test_data)} / 10000")
 
 
     def evaluate(self, test_data):
@@ -97,6 +94,7 @@ if __name__ == "__main__":
 
     training_data = [(x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(x_train, y_train_one_hot)]
     test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
-    
+
     net = NN([784,30,10], sigmoid, sigmoid_prime, cost_derivative)
-    net.train(training_data, 30, 10, 3.0)
+    net.train(training_data, 30, 0.3, test_data)
+
