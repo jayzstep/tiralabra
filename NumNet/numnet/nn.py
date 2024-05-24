@@ -26,57 +26,56 @@ class NN():
         return a
 
     def train(self, training_data, epochs, learning_rate, test_data=None):
-        counter = 0
-        for sample in training_data:
-            x, y = sample
-            a = x
-            all_as = [x]
-            zs = []
-            w1 = self.w[0]
-            w2 = self.w[1]
-            b1 = self.b[0]
-            b2 = self.b[1]
+        for i in range(epochs):
+            random.shuffle(training_data)
+            for sample in training_data:
+                x, y = sample
+                a = x
+                all_as = [x]
+                zs = []
+                w1 = self.w[0]
+                w2 = self.w[1]
+                b1 = self.b[0]
+                b2 = self.b[1]
 
-            # forward
-            z = np.dot(w1, x) + b1
-            zs.append(z)
-            a = self.activation(z)
-            all_as.append(a)
-            z = np.dot(w2, a) +b2
-            zs.append(z)
-            a = self.activation(z)
-            all_as.append(a)
+                # forward
+                z = np.dot(w1, x) + b1
+                zs.append(z)
+                a = self.activation(z)
+                all_as.append(a)
+                z = np.dot(w2, a) +b2
+                zs.append(z)
+                a = self.activation(z)
+                all_as.append(a)
 
-            # backward
-            # output layer:
-            d2 = self.cost_derivative(all_as[-1], y) # 10x1
-            ad3 = self.activation_derivative(zs[-1]) # 10x1
-            d2 = d2 * ad3 # 10x1
-            dz2 = all_as[-2] # 30x1
-            nabla_w2 = np.dot(d2, dz2.T) # 30x10
-            nabla_b2 = d2 # 10x1
+                # backward
+                # output layer:
+                d2 = self.cost_derivative(all_as[-1], y) # 10x1
+                ad3 = self.activation_derivative(zs[-1]) # 10x1
+                d2 = d2 * ad3 # 10x1
+                dz2 = all_as[-2] # 30x1
+                nabla_w2 = np.dot(d2, dz2.T) # 30x10
+                nabla_b2 = d2 # 10x1
 
-            # hidden layer:
-            d1 = np.dot(w2.T, d2) * self.activation_derivative(z[-2])
-            dz1 = x
-            nabla_w1 = np.dot(d1, dz1.T)
-            nabla_b1 = d1
+                # hidden layer:
+                d1 = np.dot(w2.T, d2) * self.activation_derivative(z[-2])
+                dz1 = x
+                nabla_w1 = np.dot(d1, dz1.T)
+                nabla_b1 = d1
 
-            # update weights/biases
-            self.w[0] -= learning_rate * nabla_w1
-            self.w[1] -= learning_rate * nabla_w2
+                # update weights/biases
+                self.w[0] -= learning_rate * nabla_w1
+                self.w[1] -= learning_rate * nabla_w2
 
-            self.b[0] -= learning_rate * nabla_b1
-            self.b[1] -= learning_rate * nabla_b2
-            
-            counter += 1
-            if counter % 1000 == 0:
-                print(f"Epoch {counter/1000}: {self.evaluate(test_data)} / 10000")
+                self.b[0] -= learning_rate * nabla_b1
+                self.b[1] -= learning_rate * nabla_b2
+                
+            print(f"Epoch {i}: {self.evaluate(test_data)} / 10000")
 
 
     def evaluate(self, test_data):
         test_results = [(np.argmax(self.predict(x)), y) for (x, y) in test_data]
-        return sum(int(x==y) for (x, y) in test_results)
+        return sum(int(x==y) for x, y in test_results)
 
 
 
@@ -96,5 +95,5 @@ if __name__ == "__main__":
     test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
     net = NN([784,30,10], sigmoid, sigmoid_prime, cost_derivative)
-    net.train(training_data, 30, 0.3, test_data)
+    net.train(training_data, 60, 0.001, test_data)
 
