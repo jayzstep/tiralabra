@@ -1,6 +1,9 @@
 import random
 import numpy as np
 import pandas as pd
+import gradio as gr
+from PIL import Image
+
 
 def cost_derivative(output_activations, y):
     return (output_activations-y)
@@ -13,7 +16,6 @@ def sigmoid_prime(z):
 
 class NN():
     def __init__(self, layers, activation, activation_derivative, cost_derivative):
-        self.layers = []
         self.b = [np.random.randn(y,1) for y in layers[1:]]
         self.w = [np.random.randn(y, x) for x, y in zip(layers[:-1], layers[1:])]
         self.activation = activation
@@ -77,8 +79,17 @@ class NN():
         test_results = [(np.argmax(self.predict(x)), y) for (x, y) in test_data]
         return sum(int(x==y) for x, y in test_results)
 
+def preprocess_image(image_dict):
+    image_data = image_dict['composite']
+    image = Image.fromarray(image_data).convert('L')
+    image = np.array(image).astype('float32') / 255
+    image = image.reshape(784, 1)
+    return image
 
-
+def predict_digit(image_dict):
+    preprocessed_image = preprocess_image(image_dict)
+    prediction = net.predict(preprocessed_image)
+    return int(np.argmax(prediction))
 
 if __name__ == "__main__":
     train_data = pd.read_csv('../data/mnist_train.csv')
@@ -95,5 +106,11 @@ if __name__ == "__main__":
     test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
     net = NN([784,30,10], sigmoid, sigmoid_prime, cost_derivative)
-    net.train(training_data, 60, 0.001, test_data)
-
+    net.train(training_data, 5, 0.025, test_data)
+    demo = gr.Interface(
+        fn=predict_digit,
+        # inputs= gr.ImageEditor(sources=(), image_mode='L', crop_size=(28,28)),
+        inputs= gr.ImageEditor(sources=(), crop_size=(28,28)),
+        outputs=gr.Label(num_top_classes=3)
+    )
+    demo.launch()
