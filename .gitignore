@@ -1,1 +1,4 @@
 NumNet/data/
+NumNet/numnet/flagged/
+__pycache__/
+
