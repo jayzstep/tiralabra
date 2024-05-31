@@ -28,7 +28,9 @@ class NN():
         return a
 
     def train(self, training_data, epochs, learning_rate, test_data=None):
+        training_data = list(training_data)
         for i in range(epochs):
+
             random.shuffle(training_data)
             for sample in training_data:
                 x, y = sample
@@ -41,13 +43,13 @@ class NN():
                 b2 = self.b[1]
 
                 # forward
-                z = np.dot(w1, x) + b1
-                zs.append(z)
-                a = self.activation(z)
+                z1 = np.dot(w1, x) + b1
+                zs.append(z1)
+                a = self.activation(z1)
                 all_as.append(a)
-                z = np.dot(w2, a) +b2
-                zs.append(z)
-                a = self.activation(z)
+                z2 = np.dot(w2, a) +b2
+                zs.append(z2)
+                a = self.activation(z2)
                 all_as.append(a)
 
                 # backward
@@ -60,7 +62,7 @@ class NN():
                 nabla_b2 = d2 # 10x1
 
                 # hidden layer:
-                d1 = np.dot(w2.T, d2) * self.activation_derivative(z[-2])
+                d1 = np.dot(w2.T, d2) * self.activation_derivative(zs[-2])
                 dz1 = x
                 nabla_w1 = np.dot(d1, dz1.T)
                 nabla_b1 = d1
@@ -72,7 +74,8 @@ class NN():
                 self.b[0] -= learning_rate * nabla_b1
                 self.b[1] -= learning_rate * nabla_b2
                 
-            print(f"Epoch {i}: {self.evaluate(test_data)} / 10000")
+            if test_data:
+                print(f"Epoch {i}: {self.evaluate(test_data)} / 10000")
 
 
     def evaluate(self, test_data):
@@ -106,7 +109,7 @@ if __name__ == "__main__":
     test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
     net = NN([784,30,10], sigmoid, sigmoid_prime, cost_derivative)
-    net.train(training_data, 5, 0.025, test_data)
+    net.train(training_data, 30, 3, test_data)
     demo = gr.Interface(
         fn=predict_digit,
         # inputs= gr.ImageEditor(sources=(), image_mode='L', crop_size=(28,28)),
