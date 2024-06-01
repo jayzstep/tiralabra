@@ -11,3 +11,12 @@ Testauksesta lukemista. Materiaalin artikkeli aukesi huomattavasti paremmin nyt 
 
 ## Keskiviikko 3h
 Ensimmäiset testit.
+
+## Torstai 1h
+Lueskelua, pari järkevämpää testiä tehtynä. Voi olla että täytyy refaktoroida koodia, että saa helpommin testattua.
+
+## Perjantai 5h
+Bugi löytyi!! Osumatarkkuus 90% huudeilla, erittäin jees. Testit etenee aika hitaasti, paljon pitää miettiä ja vähän saa aikaan.
+
+## Lauantai 2h
+Miettimistä. Ankaraa miettimistä. Ja poetryn kanssa taistelemista.

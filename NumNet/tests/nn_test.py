@@ -15,6 +15,7 @@ class TestNN(unittest.TestCase):
         cls.training_data = [(x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(cls.x_train, cls.y_train_one_hot)]
 
         cls.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
+
     def setUp(self):
         pass
          
@@ -32,3 +33,12 @@ class TestNN(unittest.TestCase):
         self.net.train(self.training_data, 50, 0.3)
         weight_after = str(self.net.w)
         self.assertNotEqual(weight_before, weight_after)
+
+    def test_sigmoid(self):
+        pass
+    def test_sigmoid_prime(self):
+        pass
+    def test_mse_prime(self):
+        pass
+
+
