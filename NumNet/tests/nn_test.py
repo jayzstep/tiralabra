@@ -13,6 +13,7 @@ class TestNN(unittest.TestCase):
         cls.y_train = cls.test_data.iloc[:, 0].values
         cls.y_train_one_hot = np.eye(10)[cls.y_train]
         cls.training_data = [(x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(cls.x_train, cls.y_train_one_hot)]
+        cls.test_data = [(x.reshape(-1, 1), y) for x, y in zip(cls.x_train, cls.y_train)]
 
         cls.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
 
@@ -21,6 +22,12 @@ class TestNN(unittest.TestCase):
          
     def test_hello_world(self):
         self.assertEqual("hello world", "hello world")
+
+    def test_nn_overfits(self):
+        evaluation_before = self.net.evaluate(self.test_data)
+        self.net.train(self.training_data, 100, 0.3)
+        evaluation_after = self.net.evaluate(self.test_data)
+        assert (evaluation_after - evaluation_before > 0)
 
     def test_biases_change(self):
         bias_before = str(copy.deepcopy(self.net.b))
