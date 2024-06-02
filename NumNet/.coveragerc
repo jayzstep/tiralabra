@@ -1,0 +1,3 @@
+[run]
+source = numnet
+omit = **/__init__.py

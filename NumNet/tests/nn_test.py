@@ -34,6 +34,14 @@ class TestNN(unittest.TestCase):
         weight_after = str(self.net.w)
         self.assertNotEqual(weight_before, weight_after)
 
+    def test_predict_raises_error_if_input_wrong_size(self):
+        a = [1,2,3]
+        self.assertRaises(ValueError, self.net.predict, a)
+
+    def test_predict_returns_something_with_right_input(self):
+        a = self.training_data[0][0]
+        self.assertEqual(10, len(self.net.predict(a)))
+
     def test_sigmoid(self):
         pass
     def test_sigmoid_prime(self):

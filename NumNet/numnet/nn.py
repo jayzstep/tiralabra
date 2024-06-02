@@ -23,6 +23,8 @@ class NN():
         self.cost_derivative = cost_derivative
 
     def predict(self, a):
+        if len(a) != 784:
+            raise ValueError('Wrong input size.')
         for b, w in zip(self.b, self.w):
             a = self.activation(np.dot(w, a) + b)
         return a
