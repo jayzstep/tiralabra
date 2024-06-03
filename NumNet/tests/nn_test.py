@@ -15,10 +15,9 @@ class TestNN(unittest.TestCase):
         cls.training_data = [(x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(cls.x_train, cls.y_train_one_hot)]
         cls.test_data = [(x.reshape(-1, 1), y) for x, y in zip(cls.x_train, cls.y_train)]
 
-        cls.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
 
     def setUp(self):
-        pass
+        self.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative) 
          
     def test_hello_world(self):
         self.assertEqual("hello world", "hello world")
