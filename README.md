@@ -47,7 +47,7 @@ python3 nn.py run
 Gradio käynnistyy localhostiin, seuraa ruudun ohjeita.
 
 ## Testaus
-Testit voi suorittaa **projektin juuresta** komennolla:
+Testit voi suorittaa `NumNet` -kansiosta käsin komennolla:
 ```bash
 pytest
 ```
