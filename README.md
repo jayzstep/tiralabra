@@ -36,13 +36,13 @@ python3 nn.py train
 Gradio käynnistyy localhostiin, seuraa ruudun ohjeita.
 
 ### Käynnistä äppi
-Olettaen että verkko on kerran koulutettu, voi treenivaiheen skipata ja käynnistää serveri suoraan:
+Olettaen että verkko on kerran koulutettu, voi treenivaiheen skipata ja serverin käynnistää suoraan komennolla:
 ```bash
 python3 nn.py run
 ```
 
 ## Testaus
-Testit voi suorittaa projektin juuresta komennolla
+Testit voi suorittaa **projektin juuresta** komennolla:
 ```bash
 pytest
 ```
