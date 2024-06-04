@@ -2,7 +2,9 @@
 
 NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 95% tarkkuudella.
 
-Mukana myös localhostiin käynnistyvä GUI, johon voi itse piirrellä numeroita. Osumatarkkuus on vähän heikompi, mutta edelleen ihan ok.
+Mukana myös localhostiin käynnistyvä GUI, johon voi itse piirrellä numeroita. Osumatarkkuus on vähän heikompi, mutta edelleen ihan suht ok, riippuu käyttäjästä.
+
+Lyhyesti: Lataa repo, lataa koulutusdata, anna Poetryn laulaa, fool around.
 
 ## Käyttöohje
 
@@ -13,11 +15,11 @@ git clone https://github.com/jayzstep/tiralabra.git
 cd NumNet
 mkdir data
 ```
-### Lataa MNIST-tietokanta CSV:t
+### Lataa koulutusdata, eli MNIST-tietokanta
 
 Lataa [täältä](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv/data) molemmat CSV-tiedostot ja laita ne kansioon `NumNet/data/`
 
-### Asenna riippuvuudet
+### Asenna riippuvuudet (tarvitset Poetryn)
 
 ```bash
 poetry install
@@ -28,18 +30,21 @@ poetry install
 poetry shell
 ```
 
-### Treenaa verkko ja käynnistä äppi
+### Treenaa verkko (jos haluat)
 ```bash
 cd numnet
 python3 nn.py train
 ```
-Gradio käynnistyy localhostiin, seuraa ruudun ohjeita.
+Tämä myös käynnistää GUI:n localhostiin. Seuraa ruudun ohjeita.
 
-### Käynnistä äppi
-Olettaen että verkko on kerran koulutettu, voi treenivaiheen skipata ja serverin käynnistää suoraan komennolla:
+**TAI**
+
+### Käynnistä äppi suoraan
+Treenivaiheen voi skipata ja serverin käynnistää suoraan komennolla:
 ```bash
 python3 nn.py run
 ```
+Gradio käynnistyy localhostiin, seuraa ruudun ohjeita.
 
 ## Testaus
 Testit voi suorittaa **projektin juuresta** komennolla:
