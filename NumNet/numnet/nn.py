@@ -8,18 +8,61 @@ from PIL import Image
 
 
 def cost_derivative(output_activations, y):
+    """
+    Laskee cost-funktion derivaatan.
+
+    Args:
+        output_activations: output layerin aktivaatiot, "outputti"
+        y: mitä pitäisi olla, eli ns. oikeat vastaukset.
+
+    Returns:
+        cost funktion derivaatta.
+    """
     return output_activations - y
 
 
 def sigmoid(z):
+    """
+    Vanha kunnon sigmoid.
+
+    Args:
+        z: aktivaatiota kaipaava vektori/numpy array
+
+    Returns:
+        aktivoitu inputti seuraavalle layerille.
+    """
     return 1.0 / (1.0 + np.exp(-z))
 
 
 def sigmoid_prime(z):
+    """
+    Sigmoidin derivaatta vastavirran laskemiseen.
+
+    Args:
+        z: aktivoimaton neuronin sisältö.
+
+    Returns:
+        sigmoidin derivaatta.
+    """
     return sigmoid(z) * (1 - sigmoid(z))
 
 
 class NN:
+    """
+    Neuroverkolle oma luokka.
+
+    Attributes:
+        b: lista numpy arrayta, joka layerille alustetut biasit
+        w: lista numpy arrayta, joka layerille alustetut painot
+        + tarvittavat funktiot
+
+    Args:
+        layers: listana layereiden neuronien määrät.
+        activation: käytettävä aktivaatiofunktio
+        activation_derivative: aktivaatiofunktion derivaatta
+        cost_derivative: cost-funktion derivaatta
+    """
+
     def __init__(self, layers, activation, activation_derivative, cost_derivative):
         self.b = [np.random.randn(y, 1) for y in layers[1:]]
         self.w = [np.random.randn(y, x) for x, y in zip(layers[:-1], layers[1:])]
@@ -28,6 +71,16 @@ class NN:
         self.cost_derivative = cost_derivative
 
     def predict(self, a):
+        """
+        Tulkitsee kuvasta mikä luku piirrettynä.
+
+        Args:
+            a: inputtina tuleva numpy array (kuva)
+
+        Returns:
+            output layerin tulos.
+            
+        """
         if len(a) != 784:
             raise ValueError("Wrong input size.")
         for b, w in zip(self.b, self.w):
@@ -35,6 +88,15 @@ class NN:
         return a
 
     def train(self, training_data, epochs, learning_rate, test_data=None):
+        """
+        Kouluttaa neuroverkon.
+
+        Args:
+            training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
+            epochs: kuinka monta rundia muhotaan treenidata läpi.
+            learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa suuntaa.
+            test_data: Voi antaa testidatan (samanlainen kuin training_data) jos haluaa mitata koulutuksen sujumista.
+        """
         training_data = list(training_data)
         for i in range(epochs):
 
@@ -85,11 +147,29 @@ class NN:
                 print(f"Epoch {i}: {self.evaluate(test_data)} / 10000")
 
     def evaluate(self, test_data):
+        """
+        Arvioi neuroverkon kykyä lajitella numeroita, joita se ei ole nähnyt.
+
+        Args:
+            test_data: lista tupleja (x,y) jossa x on sample ja y on toivottu tulos.
+
+        Returns:
+            kuinka monta meni oikein 10 000:sta.
+        """
         test_results = [(np.argmax(self.predict(x)), y) for (x, y) in test_data]
         return sum(int(x == y) for x, y in test_results)
 
 
 def preprocess_image(image_dict):
+    """
+    Yrittää muokata GUI:n tuottaman/käyttäjän luoman kuvan neuroverkolle sopivaan muotoon.
+
+    Args:
+        image_dict: GUI:n lähettämä sanakirja, jossa data
+
+    Returns:
+        numpy array jossa kuvan data oikeassa muodossa.
+    """
     image_data = image_dict["composite"]
     image = Image.fromarray(image_data).convert("L")
     image = np.array(image).astype("float32") / 255
@@ -98,17 +178,42 @@ def preprocess_image(image_dict):
 
 
 def predict_digit(image_dict):
+    """
+    Tulkitsee käyttäjän piirtämän kuvan. Tai ainakin yrittää.
+
+    Args:
+        image_dict: GUI:n lähettämä sanakirja
+
+    Returns:
+        Tulkittu numero
+    """
     preprocessed_image = preprocess_image(image_dict)
     prediction = net.predict(preprocessed_image)
     return int(np.argmax(prediction))
 
 
 def save_weights_and_biases(model, filename):
+    """
+    Tallenna painot ja biasit.
+
+    Args:
+        model: neuroverkko
+        filename: tiedoston nimi johon tallennettaan
+    """
     with open(filename, "wb") as file:
         pickle.dump((model.w, model.b), file)
 
 
 def load_weights_and_biases(filename):
+    """
+    Lataa tallennetut painot ja biasit, niin ei tarvitse joka kerta kouluttaa uudestaan.
+
+    Args:
+        filename: tiedosto jossa painot ja biasit sijaitsee
+
+    Returns:
+        Neuroverkko, jossa koulutetut painot ja biasit.
+    """
     with open(filename, "rb") as file:
         w, b = pickle.load(file)
     model = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
