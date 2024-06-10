@@ -1,9 +1,9 @@
 # Tiralabra
 
 **HUOM**
-Huomasin juuri että GUI ei toimi oikein Chromella. Safarilla toimii niin kuin pitää, Firefoxista en tiedä. Chromella ei pysty raahaamaan testikuvia, vaan pitää klikata "Upload" ja manuaalisesti valita kuva `data/testSample` -kansiosta.
-Pahoittelut tästä, rakas vertaisarvioija. Koitan selvittää mistä kyse.
-**huom**
+
+*Huomasin juuri että GUI ei toimi oikein Chromella. Safarilla toimii niin kuin pitää, Firefoxista en tiedä. Chromella ei pysty raahaamaan testikuvia, vaan pitää klikata "Upload" ja manuaalisesti valita kuva `data/testSample` -kansiosta.
+Pahoittelut tästä, rakas vertaisarvioija. Koitan selvittää mistä kyse.*
 
 NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 95% tarkkuudella.
 
