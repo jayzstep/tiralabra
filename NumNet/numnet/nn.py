@@ -160,34 +160,32 @@ class NN:
         return sum(int(x == y) for x, y in test_results)
 
 
-def preprocess_image(image_dict):
+def preprocess_image(raw_image):
     """
-    Yrittää muokata GUI:n tuottaman/käyttäjän luoman kuvan neuroverkolle sopivaan muotoon.
+    Muokkaa jpg-kuvan verkolle ymmärrettävään muotoon.
 
     Args:
-        image_dict: GUI:n lähettämä sanakirja, jossa data
+        raw_image: GUI:n lähettämä kuvadata
 
     Returns:
         numpy array jossa kuvan data oikeassa muodossa.
     """
-    image_data = image_dict["composite"]
-    image = Image.fromarray(image_data).convert("L")
-    image = np.array(image).astype("float32") / 255
+    image = np.array(raw_image).astype("float32") / 255
     image = image.reshape(784, 1)
     return image
 
 
-def predict_digit(image_dict):
+def predict_digit(image):
     """
-    Tulkitsee käyttäjän piirtämän kuvan. Tai ainakin yrittää.
+    Tulkitsee kuvan. Tai ainakin yrittää.
 
     Args:
-        image_dict: GUI:n lähettämä sanakirja
+        image: GUI:n lähettämä kuvadata
 
     Returns:
         Tulkittu numero
     """
-    preprocessed_image = preprocess_image(image_dict)
+    preprocessed_image = preprocess_image(image)
     prediction = net.predict(preprocessed_image)
     return int(np.argmax(prediction))
 
@@ -250,10 +248,10 @@ if __name__ == "__main__":
     elif args.mode == 'run':
         net = load_weights_and_biases('weights_and_biases.pkl')
 
-    demo = gr.Interface(
-        fn=predict_digit,
-        # inputs= gr.ImageEditor(sources=(), image_mode='L', crop_size=(28,28)),
-        inputs=gr.ImageEditor(sources=(), crop_size=(28, 28)),
-        outputs=gr.Label(num_top_classes=3),
-    )
-    demo.launch()
+    examples = [f"../data/testSample/img_{i}.jpg" for i in range(1, 350)]
+    gr.Interface(fn=predict_digit,
+         inputs=gr.Image(type="numpy", image_mode="L"),
+         outputs=gr.Label(num_top_classes=3),
+         examples=examples).launch()
+
+

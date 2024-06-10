@@ -2,9 +2,12 @@
 
 NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 95% tarkkuudella.
 
-Mukana myös localhostiin käynnistyvä GUI, johon voi itse piirrellä numeroita. Osumatarkkuus on vähän heikompi, mutta edelleen ihan suht ok, riippuu käyttäjästä.
+Mukana myös localhostiin käynnistyvä GUI, jossa voi raahata samplekuvia verkolle tunnistettavaksi.
 
-Lyhyesti: Lataa repo, lataa koulutusdata, anna Poetryn laulaa, fool around.
+Voit itse valita koulutatko verkon uudestaan, vai käytätkö valmiiksi koulutettua verkkoa komennoilla "train" tai "run". Tarkemmat ohjeet alla.
+Koulutuksessa menee 1-10 minuuttia, riippuu koneen spekseistä.
+
+Lyhyesti: Lataa repo, lataa koulutusdata ja samplet, anna Poetryn laulaa, fool around.
 
 ## Käyttöohje
 
@@ -17,7 +20,7 @@ mkdir data
 ```
 ### Lataa koulutusdata, eli MNIST-tietokanta
 
-Lataa [täältä](https://www.kaggle.com/datasets/oddrationale/mnist-in-csv/data) molemmat CSV-tiedostot ja laita ne kansioon `NumNet/data/`
+Lataa [täältä](https://www.dropbox.com/scl/fi/t3z7uidb1q5myqrhfbnb1/Arkisto.zip?rlkey=27iowi7reqz9khpylg8a6xrhl&st=ki8kxbsg&dl=0) molemmat CSV-tiedostot sekä samplekuvat ja laita/pura ne tässä muodossa kansioon `NumNet/data/`
 
 ### Asenna riippuvuudet (tarvitset Poetryn)
 
