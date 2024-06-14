@@ -5,8 +5,16 @@ Automaattiset testit voi suorittaa `numnet/` -kansiosta komennolla
 ```bash
 pytest
 ```
+## Testikattavuus
+Coveragen raportin mukaan testikattavuus on 12%.
+
 ## Mitä on testattu?
+
 ### Koulutus
-Verkon kouluttamisen osalta on testattu että biasit ja weightit muuttuvat kouluttaessa verkkoa. Lisäksi on testattu että kouluttaminen overfittaa pienellä datamäärällä. Edellä mainitut testit eivät takaa, että neuroverkko toimii oikein, mutta ainakin tiedetään, että **jotain** tapahtuu.
+Verkon kouluttamisen osalta on testattu, että biasit ja weightit muuttuvat kouluttaessa verkkoa. Syötteenä käytetään 10 ensimmäistä samplea koulutusdatasta ja eepokkeja on vain yksi. Lisäksi on testattu että kouluttaminen overfittaa samalla datamäärällä, eepokkien ollessa 100. Edellä mainitut testit eivät takaa, että neuroverkko toimii oikein, mutta ainakin tiedetään, että *jotain* tapahtuu.
+
 ### Tunnistaminen
-Numeroiden tunnistamisesta on testattu taas, että vastauksena tulee **jotakin**, sekä että tulostuu ValueError, jos input-data ei ole verkon olettamassa muodossa. Automaattisen testauksen lisäksi kouluttaessa evaluate-funktio printtaa testidatan osumatarkkuuden joka eepokilla.
+Numeroiden tunnistamisesta on testattu taas, että vastauksena tulee *jotakin*, sekä että tulostuu ValueError, jos input-data ei ole verkon olettamassa muodossa. Automaattisen testauksen lisäksi kouluttaessa evaluate-funktio printtaa testidatan osumatarkkuuden joka eepokin jälkeen.
+
+### Yksikkötestit
+Matemaattiset funktiot Sigmoid, sen derivaatta ja mse (mean square error) derivaatta testataan yksikkötestein.

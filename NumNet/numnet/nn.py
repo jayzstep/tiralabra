@@ -1,6 +1,7 @@
+import argparse
 import pickle
 import random
-import argparse
+
 import gradio as gr
 import numpy as np
 import pandas as pd
@@ -79,7 +80,7 @@ class NN:
 
         Returns:
             output layerin tulos.
-            
+
         """
         if len(a) != 784:
             raise ValueError("Wrong input size.")
@@ -160,33 +161,19 @@ class NN:
         return sum(int(x == y) for x, y in test_results)
 
 
-def preprocess_image(raw_image):
+def predict_digit(raw_image):
     """
-    Muokkaa jpg-kuvan verkolle ymmärrettävään muotoon.
+    Tulkitsee kuvan. Tai ainakin yrittää.
 
     Args:
         raw_image: GUI:n lähettämä kuvadata
 
     Returns:
-        numpy array jossa kuvan data oikeassa muodossa.
+        Tulkittu numero
     """
     image = np.array(raw_image).astype("float32") / 255
     image = image.reshape(784, 1)
-    return image
-
-
-def predict_digit(image):
-    """
-    Tulkitsee kuvan. Tai ainakin yrittää.
-
-    Args:
-        image: GUI:n lähettämä kuvadata
-
-    Returns:
-        Tulkittu numero
-    """
-    preprocessed_image = preprocess_image(image)
-    prediction = net.predict(preprocessed_image)
+    prediction = net.predict(image)
     return int(np.argmax(prediction))
 
 
@@ -222,10 +209,14 @@ def load_weights_and_biases(filename):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Choose train or run")
-    parser.add_argument('mode', choices=['train', 'run'], help="'train' to train and save weights/biases to memory and start the app, 'run' to load weights and biases from memory and start the app.")
+    parser.add_argument(
+        "mode",
+        choices=["train", "run"],
+        help="'train' to train and save weights/biases to memory and start the app, 'run' to load weights and biases from memory and start the app.",
+    )
     args = parser.parse_args()
 
-    if args.mode == 'train':
+    if args.mode == "train":
         train_data = pd.read_csv("../data/mnist_train.csv")
         test_data = pd.read_csv("../data/mnist_test.csv")
 
@@ -237,21 +228,22 @@ if __name__ == "__main__":
         y_train_one_hot = np.eye(10)[y_train]
 
         training_data = [
-            (x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(x_train, y_train_one_hot)
+            (x.reshape(-1, 1), y.reshape(-1, 1))
+            for x, y in zip(x_train, y_train_one_hot)
         ]
         test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
         net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, test_data)
-        save_weights_and_biases(net, 'weights_and_biases.pkl')
+        save_weights_and_biases(net, "weights_and_biases.pkl")
 
-    elif args.mode == 'run':
-        net = load_weights_and_biases('weights_and_biases.pkl')
+    elif args.mode == "run":
+        net = load_weights_and_biases("weights_and_biases.pkl")
 
     examples = [f"../data/testSample/img_{i}.jpg" for i in range(1, 350)]
-    gr.Interface(fn=predict_digit,
-         inputs=gr.Image(type="numpy", image_mode="L"),
-         outputs=gr.Label(num_top_classes=3),
-         examples=examples).launch()
-
-
+    gr.Interface(
+        fn=predict_digit,
+        inputs=gr.Image(type="numpy", image_mode="L"),
+        outputs=gr.Label(num_top_classes=1),
+        examples=examples,
+    ).launch()
