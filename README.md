@@ -2,7 +2,7 @@
 
 NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 95% tarkkuudella.
 
-Mukana myös localhostiin käynnistyvä GUI, jossa voi raahata samplekuvia verkolle tunnistettavaksi.
+Mukana myös localhostiin käynnistyvä GUI, jossa voi klikata samplekuvia verkolle tunnistettavaksi.
 
 Voit itse valita koulutatko verkon uudestaan, vai käytätkö valmiiksi koulutettua verkkoa komennoilla "train" tai "run". Tarkemmat ohjeet alla.
 Koulutuksessa menee 1-10 minuuttia, riippuu koneen spekseistä.
