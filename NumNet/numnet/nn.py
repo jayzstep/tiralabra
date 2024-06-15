@@ -22,7 +22,7 @@ def cost_derivative(output_activations, y):
 
 def softmax(z):
     """
-    Softmax output-layerille
+    Softmax-funktio output-layerille, tätä ei tosin käytetä, mutta jatkossa -- kuka tietää!
 
     Args:
         z: output np array
@@ -64,8 +64,8 @@ class NN:
     Neuroverkolle oma luokka.
 
     Attributes:
-        b: lista numpy arrayta, joka layerille alustetut biasit
-        w: lista numpy arrayta, joka layerille alustetut painot
+        b: lista numpy arrayta, joka layerille alustetaan biasit
+        w: lista numpy arrayta, joka layerille alustetaan painot
         + tarvittavat funktiot
 
     Args:
@@ -76,8 +76,8 @@ class NN:
     """
 
     def __init__(self, layers, activation, activation_derivative, cost_derivative):
-        self.b = [np.random.randn(y, 1) for y in layers[1:]]
-        self.w = [np.random.randn(y, x) for x, y in zip(layers[:-1], layers[1:])]
+        self.b = [np.random.randn(y, 1) * 0.1 for y in layers[1:]]
+        self.w = [np.random.randn(y, x) * 0.1 for x, y in zip(layers[:-1], layers[1:])]
         self.activation = activation
         self.activation_derivative = activation_derivative
         self.cost_derivative = cost_derivative
@@ -87,10 +87,10 @@ class NN:
         Tulkitsee kuvasta mikä luku piirrettynä.
 
         Args:
-            a: inputtina tuleva numpy array (kuva)
+            a: samplekuva (784, 1) kokoisena nunpy arrayna 
 
         Returns:
-            output layerin tulos.
+            output layerin tulos vektorina.
 
         """
         if len(a) != 784:
@@ -101,7 +101,7 @@ class NN:
 
     def train(self, training_data, epochs, learning_rate, batch_size, test_data=None):
         """
-        Kouluttaa neuroverkon.
+        Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan ensin verkossa eteenpäin. Tästä otetaan talteen vastavirran tarvitsemat arvot. Sen jälkeen eri kerrosten vaiheille lasketaan gradientit lopusta alkuun (tämä on se vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille muutos nabla-muuttujiin. Tämä muutos lisätään nykyisiin arvoihin, näin verkko oppii.
 
         Args:
             training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
@@ -121,17 +121,13 @@ class NN:
                 x_batch = np.hstack([x for x, _ in mini_batch])
                 y_batch = np.hstack([y for _, y in mini_batch])
 
-                # print(x_batch.shape)
-                # print(y_batch.shape)
                 a = x_batch
                 all_as = [x_batch]
                 zs = []
                 w2 = self.w[1]
-                # # print(type(sample))
 
                 # forward
                 for w, b in zip(self.w, self.b):
-                    # print("w.shape:", w.shape)
                     z = np.dot(w, a) + b
                     zs.append(z)
                     a = self.activation(z)
@@ -139,15 +135,12 @@ class NN:
 
                 # backward
                 # output layer:
-                # # print("a2", all_as[-1].shape, "y", y_batch.shape)
                 d2 = self.cost_derivative(all_as[-1], y_batch)  # 10x10
                 ad3 = self.activation_derivative(zs[-1])  # 10x10
                 d2 = d2 * ad3  # 10x1
                 dz2 = all_as[-2]  # 30x1
                 nabla_w2 = np.dot(d2, dz2.T) / batch_size
                 nabla_b2 = np.sum(d2, axis=1, keepdims=True) / batch_size
-                # print("nabla_w2:", nabla_w2.shape)
-                # print("nabla_b2:", nabla_b2.shape)
 
                 # hidden layer:
                 d1 = np.dot(w2.T, d2) * self.activation_derivative(zs[-2])
@@ -179,17 +172,17 @@ class NN:
         return sum(int(x == y) for x, y in test_results)
 
 
-def predict_digit(raw_image):
+def predict_digit(digit):
     """
-    Tulkitsee kuvan. Tai ainakin yrittää.
+    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin, joka MNISTin tapauksessa on sopivasti sama kuin korkeimman ennusteen saanut numero.
 
     Args:
-        raw_image: GUI:n lähettämä kuvadata
+        digit: GUI:n lähettämä kuvadata, nimetty digit, koska se näkyy input-kentän otsikkona.
 
     Returns:
         Tulkittu numero
     """
-    image = np.array(raw_image).astype("float32") / 255
+    image = np.array(digit).astype("float32") / 255
     image = image.reshape(784, 1)
     prediction = net.predict(image)
     return int(np.argmax(prediction))
@@ -197,7 +190,7 @@ def predict_digit(raw_image):
 
 def save_weights_and_biases(model, filename):
     """
-    Tallenna painot ja biasit.
+    Tallentaa painot ja biasit tiedostoon.
 
     Args:
         model: neuroverkko
@@ -209,7 +202,7 @@ def save_weights_and_biases(model, filename):
 
 def load_weights_and_biases(filename):
     """
-    Lataa tallennetut painot ja biasit, niin ei tarvitse joka kerta kouluttaa uudestaan.
+    Lataa tallennetut painot ja biasit, näin verkkoa ei tarvitse joka kerta kouluttaa uudestaan. On myös fiksu siltä osin, että luo juuri oikean kokoisen verkon tsekkaamalla datasta hidden layerille oikean koon.
 
     Args:
         filename: tiedosto jossa painot ja biasit sijaitsee
@@ -219,7 +212,8 @@ def load_weights_and_biases(filename):
     """
     with open(filename, "rb") as file:
         w, b = pickle.load(file)
-    model = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
+    hidden_layer_size = w[0].shape[0]
+    model = NN([784, hidden_layer_size, 10], sigmoid, sigmoid_prime, cost_derivative)
     model.w = w
     model.b = b
     return model
@@ -260,7 +254,7 @@ if __name__ == "__main__":
         # net.train(training_data, 1, 0.3, 10)
 
         # For real
-        net = NN([784, 50, 10], sigmoid, sigmoid_prime, cost_derivative)
+        net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, 10, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
 
@@ -273,4 +267,10 @@ if __name__ == "__main__":
         inputs=gr.Image(type="numpy", image_mode="L"),
         outputs=gr.Label(num_top_classes=1),
         examples=examples,
+        examples_per_page=50,
+        live=True,
+        title="NumNet",
+        description="A Neural Network trained to classify hand written digits. Click a number to present it to the net.",
+        article="",
+        allow_flagging="never",
     ).launch()

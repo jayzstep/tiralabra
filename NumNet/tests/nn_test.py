@@ -30,19 +30,19 @@ class TestNN(unittest.TestCase):
 
     def test_nn_overfits(self):
         evaluation_before = self.net.evaluate(self.test_data)
-        self.net.train(self.training_data, 100, 0.3)
+        self.net.train(self.training_data, 100, 0.3, 1)
         evaluation_after = self.net.evaluate(self.test_data)
         assert evaluation_after - evaluation_before > 0
 
     def test_biases_change(self):
         bias_before = str(copy.deepcopy(self.net.b))
-        self.net.train(self.training_data, 1, 0.3)
+        self.net.train(self.training_data, 1, 0.3, 1)
         bias_after = str(self.net.b)
         self.assertNotEqual(bias_before, bias_after)
 
     def test_weights_change(self):
         weight_before = str(copy.deepcopy(self.net.w))
-        self.net.train(self.training_data, 1, 0.3)
+        self.net.train(self.training_data, 1, 0.3, 1)
         weight_after = str(self.net.w)
         self.assertNotEqual(weight_before, weight_after)
 
