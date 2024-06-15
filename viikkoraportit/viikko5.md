@@ -8,3 +8,10 @@ Aloin kirjoittamaan testausdokumenttia. Tutustuin vertaisarvioitavaan koodiin.
 ## Perjantai 2h
 Vertaisarvioinnin kirjoittamista.
 
+## Perjantai 3h
+Palautteesta inspiroituneena päätin lisätä mini_batchit ja laskea ne matriisilaskuna. Olikin sarkaa löytää simppelein lähestyminen, aloin aluksi ihan liian monimutkaisesti. Pari kertaa piti ottaa wanha kunnon git reset ja puhdas pöytä. En saanu skulaamaan vielä, mutta nyt olen aika hyvin kartalla siitä miten rakentaa himmeli askel askeleelta. break, .shape ja print ovat ystäviä.
+
+## Lauantai 2h
+Jes! Nyt toimii batchit (ainakin kokoa 10) ja käytetään Numpyn matriisilaskua, eli pitäisi olla (ja onkin) reippaasti nopeampi kuin edellinen ratkaisu.
+
+
