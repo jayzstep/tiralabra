@@ -99,7 +99,7 @@ class NN:
             a = self.activation(np.dot(w, a) + b)
         return a
 
-    def train(self, training_data, epochs, learning_rate, test_data=None):
+    def train(self, training_data, epochs, learning_rate, batch_size, test_data=None):
         """
         Kouluttaa neuroverkon.
 
@@ -109,19 +109,29 @@ class NN:
             learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa suuntaa.
             test_data: Voi antaa testidatan (samanlainen kuin training_data) jos haluaa mitata koulutuksen sujumista.
         """
+        print(f"Type of training_data: {type(training_data)}")
+        print(f"Type of batch_size: {type(batch_size)}")
+        print(f"Type of epochs: {type(epochs)}")
         training_data = list(training_data)
         for i in range(epochs):
 
             random.shuffle(training_data)
-            for sample in training_data:
-                x, y = sample
-                a = x
-                all_as = [x]
+            mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
+            for mini_batch in mini_batches:
+                x_batch = np.hstack([x for x, _ in mini_batch])
+                y_batch = np.hstack([y for _, y in mini_batch])
+
+                # print(x_batch.shape)
+                # print(y_batch.shape)
+                a = x_batch
+                all_as = [x_batch]
                 zs = []
                 w2 = self.w[1]
+                # # print(type(sample))
 
                 # forward
                 for w, b in zip(self.w, self.b):
+                    # print("w.shape:", w.shape)
                     z = np.dot(w, a) + b
                     zs.append(z)
                     a = self.activation(z)
@@ -129,18 +139,21 @@ class NN:
 
                 # backward
                 # output layer:
-                d2 = self.cost_derivative(all_as[-1], y)  # 10x1
-                ad3 = self.activation_derivative(zs[-1])  # 10x1
+                # # print("a2", all_as[-1].shape, "y", y_batch.shape)
+                d2 = self.cost_derivative(all_as[-1], y_batch)  # 10x10
+                ad3 = self.activation_derivative(zs[-1])  # 10x10
                 d2 = d2 * ad3  # 10x1
                 dz2 = all_as[-2]  # 30x1
-                nabla_w2 = np.dot(d2, dz2.T)  # 30x10
-                nabla_b2 = d2  # 10x1
+                nabla_w2 = np.dot(d2, dz2.T) / batch_size
+                nabla_b2 = np.sum(d2, axis=1, keepdims=True) / batch_size
+                # print("nabla_w2:", nabla_w2.shape)
+                # print("nabla_b2:", nabla_b2.shape)
 
                 # hidden layer:
                 d1 = np.dot(w2.T, d2) * self.activation_derivative(zs[-2])
-                dz1 = x
-                nabla_w1 = np.dot(d1, dz1.T)
-                nabla_b1 = d1
+                dz1 = x_batch
+                nabla_w1 = np.dot(d1, dz1.T) / batch_size
+                nabla_b1 = np.sum(d1, axis=1, keepdims=True) / batch_size
 
                 # update weights/biases
                 self.w[0] -= learning_rate * nabla_w1
@@ -241,8 +254,14 @@ if __name__ == "__main__":
 
     if args.mode == "train":
         training_data, test_data = load_csv()
+        # Debuggausta:
+        # training_data = training_data[0:10]
+        # net = NN([784, 50, 10], sigmoid, sigmoid_prime, cost_derivative)
+        # net.train(training_data, 1, 0.3, 10)
+
+        # For real
         net = NN([784, 50, 10], sigmoid, sigmoid_prime, cost_derivative)
-        net.train(training_data, 30, 0.3, test_data)
+        net.train(training_data, 30, 0.3, 10, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
 
     elif args.mode == "run":
