@@ -5,7 +5,6 @@ import random
 import gradio as gr
 import numpy as np
 import pandas as pd
-from PIL import Image
 
 
 def cost_derivative(output_activations, y):
@@ -21,6 +20,18 @@ def cost_derivative(output_activations, y):
     """
     return output_activations - y
 
+def softmax(z):
+    """
+    Softmax output-layerille
+
+    Args:
+        z: output np array
+
+    Returns:
+        aktivoitu output layer
+    """
+    exp = np.exp(z - np.max(z))
+    return exp / exp.sum(axis=0)
 
 def sigmoid(z):
     """
@@ -107,20 +118,14 @@ class NN:
                 a = x
                 all_as = [x]
                 zs = []
-                w1 = self.w[0]
                 w2 = self.w[1]
-                b1 = self.b[0]
-                b2 = self.b[1]
 
                 # forward
-                z1 = np.dot(w1, x) + b1
-                zs.append(z1)
-                a = self.activation(z1)
-                all_as.append(a)
-                z2 = np.dot(w2, a) + b2
-                zs.append(z2)
-                a = self.activation(z2)
-                all_as.append(a)
+                for w, b in zip(self.w, self.b):
+                    z = np.dot(w, a) + b
+                    zs.append(z)
+                    a = self.activation(z)
+                    all_as.append(a)
 
                 # backward
                 # output layer:
@@ -206,17 +211,7 @@ def load_weights_and_biases(filename):
     model.b = b
     return model
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Choose train or run")
-    parser.add_argument(
-        "mode",
-        choices=["train", "run"],
-        help="'train' to train and save weights/biases to memory and start the app, 'run' to load weights and biases from memory and start the app.",
-    )
-    args = parser.parse_args()
-
-    if args.mode == "train":
+def load_csv():
         train_data = pd.read_csv("../data/mnist_train.csv")
         test_data = pd.read_csv("../data/mnist_test.csv")
 
@@ -233,7 +228,20 @@ if __name__ == "__main__":
         ]
         test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
-        net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
+        return training_data, test_data
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Choose train or run")
+    parser.add_argument(
+        "mode",
+        choices=["train", "run"],
+        help="'train' to train and save weights/biases to memory and start the app, 'run' to load weights and biases from memory and start the app.",
+    )
+    args = parser.parse_args()
+
+    if args.mode == "train":
+        training_data, test_data = load_csv()
+        net = NN([784, 50, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
 
