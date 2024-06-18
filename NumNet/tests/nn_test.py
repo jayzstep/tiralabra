@@ -25,9 +25,6 @@ class TestNN(unittest.TestCase):
     def setUp(self):
         self.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
 
-    def test_hello_world(self):
-        self.assertEqual("hello world", "hello world")
-
     def test_nn_overfits(self):
         evaluation_before = self.net.evaluate(self.test_data)
         self.net.train(self.training_data, 100, 0.3, 1)

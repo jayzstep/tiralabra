@@ -43,11 +43,11 @@ Tämä myös käynnistää GUI:n localhostiin. Seuraa ruudun ohjeita.
 **TAI**
 
 ### Käynnistä äppi suoraan
-Treenivaiheen voi skipata ja serverin käynnistää suoraan komennolla:
+Treenivaiheen voi skipata ja serverin käynnistää `numnet/` -kansiosta suoraan komennolla:
 ```bash
 python3 nn.py run
 ```
-Gradio käynnistyy localhostiin, seuraa ruudun ohjeita.
+GUI käynnistyy localhostiin, seuraa ruudun ohjeita.
 
 ## Testaus
 Testit voi suorittaa `NumNet` -kansiosta käsin komennolla:

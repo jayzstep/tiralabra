@@ -101,7 +101,10 @@ class NN:
 
     def train(self, training_data, epochs, learning_rate, batch_size, test_data=None):
         """
-        Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan ensin verkossa eteenpäin. Tästä otetaan talteen vastavirran tarvitsemat arvot. Sen jälkeen eri kerrosten vaiheille lasketaan gradientit lopusta alkuun (tämä on se vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille muutos nabla-muuttujiin. Tämä muutos lisätään nykyisiin arvoihin, näin verkko oppii.
+        Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan ensin verkossa eteenpäin. 
+        Tästä otetaan talteen vastavirran tarvitsemat arvot. Sen jälkeen eri kerrosten vaiheille lasketaan gradientit 
+        lopusta alkuun (tämä on se vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille 
+        muutos nabla-muuttujiin. Tämä muutos lisätään nykyisiin arvoihin, näin verkko oppii.
 
         Args:
             training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
@@ -109,46 +112,43 @@ class NN:
             learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa suuntaa.
             test_data: Voi antaa testidatan (samanlainen kuin training_data) jos haluaa mitata koulutuksen sujumista.
         """
-        print(f"Type of training_data: {type(training_data)}")
-        print(f"Type of batch_size: {type(batch_size)}")
-        print(f"Type of epochs: {type(epochs)}")
         training_data = list(training_data)
         for i in range(epochs):
 
-            random.shuffle(training_data)
-            mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)]
+            random.shuffle(training_data) # sekoittaa training_datan järjestyksen joka eepokille
+            mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)] # pilkkoo training_datan mini_batcheiksi, operoidaan siis monta samplea kerrallaan
             for mini_batch in mini_batches:
-                x_batch = np.hstack([x for x, _ in mini_batch])
+                x_batch = np.hstack([x for x, _ in mini_batch]) # muunnetaan matriisiksi
                 y_batch = np.hstack([y for _, y in mini_batch])
 
-                a = x_batch
-                all_as = [x_batch]
-                zs = []
-                w2 = self.w[1]
+                a = x_batch 
+                all_as = [x_batch] # kerätään layereiden aktivaatiot listaan
+                zs = [] # lista aktivoimattomista outputeista
+                w2 = self.w[1] # hidden layerin weightit talteen jatkoa varten
 
-                # forward
+                # forward propagation / viedään samplet verkon läpi, otetaan talteen relevantit vaiheet z ja a
                 for w, b in zip(self.w, self.b):
                     z = np.dot(w, a) + b
                     zs.append(z)
                     a = self.activation(z)
                     all_as.append(a)
 
-                # backward
-                # output layer:
-                d2 = self.cost_derivative(all_as[-1], y_batch)  # 10x10
-                ad3 = self.activation_derivative(zs[-1])  # 10x10
-                d2 = d2 * ad3  # 10x1
-                dz2 = all_as[-2]  # 30x1
-                nabla_w2 = np.dot(d2, dz2.T) / batch_size
-                nabla_b2 = np.sum(d2, axis=1, keepdims=True) / batch_size
+                # backward propagation / vastavirta-algoritmi. Lasketaan gradientit painoille ja biaseille
+                # output layerin:
+                d2 = self.cost_derivative(all_as[-1], y_batch) 
+                ad3 = self.activation_derivative(zs[-1])  
+                d2 = d2 * ad3
+                dz2 = all_as[-2]
+                nabla_w2 = np.dot(d2, dz2.T) / batch_size # gradientit talteen tälle kerrokselle
+                nabla_b2 = np.sum(d2, axis=1, keepdims=True) / batch_size # sama painojen gradienteille
 
                 # hidden layer:
-                d1 = np.dot(w2.T, d2) * self.activation_derivative(zs[-2])
+                d1 = np.dot(w2.T, d2) * self.activation_derivative(zs[-2]) # 
                 dz1 = x_batch
                 nabla_w1 = np.dot(d1, dz1.T) / batch_size
                 nabla_b1 = np.sum(d1, axis=1, keepdims=True) / batch_size
 
-                # update weights/biases
+                # päivitetään joka kerroksen painot ja biasit
                 self.w[0] -= learning_rate * nabla_w1
                 self.w[1] -= learning_rate * nabla_w2
 
@@ -174,7 +174,8 @@ class NN:
 
 def predict_digit(digit):
     """
-    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin, joka MNISTin tapauksessa on sopivasti sama kuin korkeimman ennusteen saanut numero.
+    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin, 
+    joka MNISTin tapauksessa on sopivasti sama kuin korkeimman ennusteen saanut numero.
 
     Args:
         digit: GUI:n lähettämä kuvadata, nimetty digit, koska se näkyy input-kentän otsikkona.
@@ -202,7 +203,8 @@ def save_weights_and_biases(model, filename):
 
 def load_weights_and_biases(filename):
     """
-    Lataa tallennetut painot ja biasit, näin verkkoa ei tarvitse joka kerta kouluttaa uudestaan. On myös fiksu siltä osin, että luo juuri oikean kokoisen verkon tsekkaamalla datasta hidden layerille oikean koon.
+    Lataa tallennetut painot ja biasit, näin verkkoa ei tarvitse joka kerta kouluttaa uudestaan. 
+    On myös fiksu siltä osin, että luo juuri oikean kokoisen verkon tsekkaamalla datasta hidden layerille oikean koon.
 
     Args:
         filename: tiedosto jossa painot ja biasit sijaitsee
