@@ -81,6 +81,7 @@ class NN:
         self.activation = activation
         self.activation_derivative = activation_derivative
         self.cost_derivative = cost_derivative
+        self.seed = None
 
     def predict(self, a):
         """
@@ -99,12 +100,37 @@ class NN:
             a = self.activation(np.dot(w, a) + b)
         return a
 
+    def forward(self, x_batch):
+        """
+        Viedään input data verkon läpi. Tallennetaan joka kerrokselta painotetut ja aktivoidut neuronien
+        outputit.
+
+        Args:
+            x_batch: training datan sampleja matriisina.
+
+        Returns:
+            Kaksi listaa, joissa toisessa aktivoidut neuronit ja toisessa aktivoimattomat per kerros.
+        """
+
+        a = x_batch 
+        all_as = [x_batch] # kerätään layereiden aktivaatiot listaan
+        zs = [] # lista aktivoimattomista outputeista
+
+        # forward propagation / viedään samplet verkon läpi, otetaan talteen relevantit vaiheet z ja a
+        for w, b in zip(self.w, self.b):
+            z = np.dot(w, a) + b
+            zs.append(z)
+            a = self.activation(z)
+            all_as.append(a)
+
+        return all_as, zs
+
     def train(self, training_data, epochs, learning_rate, batch_size, test_data=None):
         """
         Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan ensin verkossa eteenpäin. 
         Tästä otetaan talteen vastavirran tarvitsemat arvot. Sen jälkeen eri kerrosten vaiheille lasketaan gradientit 
         lopusta alkuun (tämä on se vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille 
-        muutos nabla-muuttujiin. Tämä muutos lisätään nykyisiin arvoihin, näin verkko oppii.
+        muutos nabla-muuttujiin. Tämä muutos lisätään (tai vähennetään) nykyisiin weight/bias arvoihin, näin verkko oppii.
 
         Args:
             training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
@@ -112,26 +138,19 @@ class NN:
             learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa suuntaa.
             test_data: Voi antaa testidatan (samanlainen kuin training_data) jos haluaa mitata koulutuksen sujumista.
         """
+        if self.seed is not None:
+            np.random.seed(self.seed)
         training_data = list(training_data)
         for i in range(epochs):
-
             random.shuffle(training_data) # sekoittaa training_datan järjestyksen joka eepokille
             mini_batches = [training_data[k:k + batch_size] for k in range(0, len(training_data), batch_size)] # pilkkoo training_datan mini_batcheiksi, operoidaan siis monta samplea kerrallaan
             for mini_batch in mini_batches:
                 x_batch = np.hstack([x for x, _ in mini_batch]) # muunnetaan matriisiksi
                 y_batch = np.hstack([y for _, y in mini_batch])
-
-                a = x_batch 
-                all_as = [x_batch] # kerätään layereiden aktivaatiot listaan
-                zs = [] # lista aktivoimattomista outputeista
+                
+                # Otetaan talteen muuttujia vastavirtaa varte
                 w2 = self.w[1] # hidden layerin weightit talteen jatkoa varten
-
-                # forward propagation / viedään samplet verkon läpi, otetaan talteen relevantit vaiheet z ja a
-                for w, b in zip(self.w, self.b):
-                    z = np.dot(w, a) + b
-                    zs.append(z)
-                    a = self.activation(z)
-                    all_as.append(a)
+                all_as, zs = self.forward(x_batch)
 
                 # backward propagation / vastavirta-algoritmi. Lasketaan gradientit painoille ja biaseille
                 # output layerin:

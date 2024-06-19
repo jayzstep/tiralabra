@@ -1,6 +1,6 @@
 import copy
 import unittest
-
+import pytest
 import numpy as np
 import pandas as pd
 
@@ -32,16 +32,22 @@ class TestNN(unittest.TestCase):
         assert evaluation_after - evaluation_before > 0
 
     def test_biases_change(self):
-        bias_before = str(copy.deepcopy(self.net.b))
+        bias_before = [copy.deepcopy(biases) for biases in self.net.b]
         self.net.train(self.training_data, 1, 0.3, 1)
-        bias_after = str(self.net.b)
-        self.assertNotEqual(bias_before, bias_after)
+        bias_after = self.net.b
+        for layer_number, (before, after) in enumerate(zip(bias_before, bias_after)):
+            with self.subTest(layer=layer_number):
+                self.assertFalse(np.array_equal(before, after), f"Bias error in layer {layer_number}")
 
+    # @pytest.mark.weights
     def test_weights_change(self):
-        weight_before = str(copy.deepcopy(self.net.w))
+        weights_before = [copy.deepcopy(weights) for weights in self.net.w]
         self.net.train(self.training_data, 1, 0.3, 1)
-        weight_after = str(self.net.w)
-        self.assertNotEqual(weight_before, weight_after)
+        weights_after = self.net.w
+        
+        for layer_number, (before, after) in enumerate(zip(weights_before, weights_after)):
+            with self.subTest(layer=layer_number):
+                self.assertFalse(np.array_equal(before, after), f"Weight error in layer {layer_number}")
 
     def test_predict_raises_error_if_input_wrong_size(self):
         a = [1, 2, 3]
@@ -51,6 +57,8 @@ class TestNN(unittest.TestCase):
         a = self.training_data[0][0]
         self.assertEqual(10, len(self.net.predict(a)))
 
+    def test_sample_order_doesnt_matter(self):
+        pass
     def test_sigmoid(self):
         pass
 
