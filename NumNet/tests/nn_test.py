@@ -3,6 +3,7 @@ import unittest
 import pytest
 import numpy as np
 import pandas as pd
+import random
 
 from numnet.nn import NN, cost_derivative, sigmoid, sigmoid_prime
 
@@ -58,7 +59,24 @@ class TestNN(unittest.TestCase):
         self.assertEqual(10, len(self.net.predict(a)))
 
     def test_sample_order_doesnt_matter(self):
-        pass
+        x_batch = np.hstack([x for x, _ in self.training_data]) 
+        n = x_batch.shape[1]
+
+        x_all_as, _ = self.net.forward(x_batch)
+        x_output = x_all_as[-1]
+        random_index = np.random.permutation(n)
+        shuffled_x_batch = x_batch[:, random_index]
+        shuffled_x_all_as, _ = self.net.forward(shuffled_x_batch)
+        shuffled_x_output = shuffled_x_all_as[-1]
+
+        flag = True
+        for i in range(n):
+            index = random_index[i]
+            if not np.allclose( x_output[:, index], shuffled_x_output[:, i]):
+                flag = False
+                break
+        self.assertTrue(flag)
+
     def test_sigmoid(self):
         pass
 
