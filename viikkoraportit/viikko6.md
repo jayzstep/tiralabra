@@ -3,6 +3,8 @@
 Päivittelin vähän kommentteja vertaisarvioijaa varten. W ja B testit olivat aika tyhmät, joten päivitin ne käyttämään numpyn array_equalia.
 Hakkasin päätä seinään testin kanssa, joka testaa onko samplejen järjestyksellä väliä. Mutta nyt tiedän mitä pitää tehdä. Huomisen hommia.
 
-## Keskiviikko 2h
+## Keskiviikko 3h
 
-Refaktoroin forwardpropagationin omaksi funktioksi, niin pääsee sitä testaamaan erikseen.
+Refaktoroin forwardpropagationin omaksi funktioksi, niin pääsee sitä testaamaan erikseen. Tein myös sille samplejärjestys testin. Huomasin myös, että 
+testatessa voi olla mukava, jos käyttää seediä arpoessa w ja b arvoja, joten säädin vähän verkkoluokkaa ja testejä, niin että arvotut painot ja biasit
+pysyy samoina. En koskaan huomannut siinä mitään ongelmaa, mutta testaamismatskujen artikkelissa oli mainittu että seed voi olla hyvä idea.

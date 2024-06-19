@@ -76,12 +76,18 @@ class NN:
     """
 
     def __init__(self, layers, activation, activation_derivative, cost_derivative):
-        self.b = [np.random.randn(y, 1) * 0.1 for y in layers[1:]]
-        self.w = [np.random.randn(y, x) * 0.1 for x, y in zip(layers[:-1], layers[1:])]
+        self.seed = None
+        self.w_and_b_initializer(layers)
         self.activation = activation
         self.activation_derivative = activation_derivative
         self.cost_derivative = cost_derivative
-        self.seed = None
+
+    def w_and_b_initializer(self, layers):
+        if self.seed is not None:
+            np.random.seed(self.seed)
+
+        self.b = [np.random.randn(y, 1) * 0.1 for y in layers[1:]]
+        self.w = [np.random.randn(y, x) * 0.1 for x, y in zip(layers[:-1], layers[1:])]
 
     def predict(self, a):
         """

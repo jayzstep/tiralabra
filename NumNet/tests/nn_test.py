@@ -24,7 +24,10 @@ class TestNN(unittest.TestCase):
         ]
 
     def setUp(self):
-        self.net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
+        layers = [784, 30, 10]
+        self.net = NN(layers, sigmoid, sigmoid_prime, cost_derivative)
+        self.net.seed = 1337
+        self.net.w_and_b_initializer(layers)
 
     def test_nn_overfits(self):
         evaluation_before = self.net.evaluate(self.test_data)
