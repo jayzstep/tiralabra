@@ -36,7 +36,7 @@ poetry shell
 ### Treenaa verkko (jos haluat)
 ```bash
 cd numnet
-python3 nn.py train
+python3 main.py train
 ```
 Tämä myös käynnistää GUI:n localhostiin. Seuraa ruudun ohjeita.
 
@@ -45,7 +45,7 @@ Tämä myös käynnistää GUI:n localhostiin. Seuraa ruudun ohjeita.
 ### Käynnistä äppi suoraan
 Treenivaiheen voi skipata ja serverin käynnistää `numnet/` -kansiosta suoraan komennolla:
 ```bash
-python3 nn.py run
+python3 main.py run
 ```
 GUI käynnistyy localhostiin, seuraa ruudun ohjeita.
 

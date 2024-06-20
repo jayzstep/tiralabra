@@ -43,7 +43,7 @@ class TestNN(unittest.TestCase):
             with self.subTest(layer=layer_number):
                 self.assertFalse(np.array_equal(before, after), f"Bias error in layer {layer_number}")
 
-    # @pytest.mark.weights
+            
     def test_weights_change(self):
         weights_before = [copy.deepcopy(weights) for weights in self.net.w]
         self.net.train(self.training_data, 1, 0.3, 1)
