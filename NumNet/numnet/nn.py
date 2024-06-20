@@ -159,7 +159,7 @@ class NN:
                 all_as, zs = self.forward(x_batch)
 
                 # backward propagation / vastavirta-algoritmi. Lasketaan gradientit painoille ja biaseille
-                # output layerin:
+                # output layer:
                 d2 = self.cost_derivative(all_as[-1], y_batch) 
                 ad3 = self.activation_derivative(zs[-1])  
                 d2 = d2 * ad3
@@ -281,7 +281,7 @@ if __name__ == "__main__":
         # net.train(training_data, 1, 0.3, 10)
 
         # For real
-        net = NN([784, 30, 10], sigmoid, sigmoid_prime, cost_derivative)
+        net = NN([784, 60, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, 10, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
 
