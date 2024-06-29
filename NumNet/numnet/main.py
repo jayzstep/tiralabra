@@ -1,12 +1,15 @@
 import argparse
+
 import gradio as gr
 import numpy as np
 import pandas as pd
-from nn import NN, sigmoid, sigmoid_prime, cost_derivative, save_weights_and_biases, load_weights_and_biases
+from nn import (NN, cost_derivative, load_weights_and_biases,
+                save_weights_and_biases, sigmoid, sigmoid_prime)
+
 
 def predict_digit(digit):
     """
-    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin, 
+    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin,
     joka MNISTin tapauksessa on sopivasti sama kuin korkeimman ennusteen saanut numero.
 
     Args:
@@ -16,29 +19,32 @@ def predict_digit(digit):
         Tulkittu numero
     """
     image = np.array(digit).astype("float32") / 255
-    image = image.reshape(784, 1)
+    try:
+        image = image.reshape(784, 1)
+    except:
+        return ""
     prediction = net.predict(image)
     return int(np.argmax(prediction))
 
 
 def load_csv():
-        train_data = pd.read_csv("../data/mnist_train.csv")
-        test_data = pd.read_csv("../data/mnist_test.csv")
+    train_data = pd.read_csv("../data/mnist_train.csv")
+    test_data = pd.read_csv("../data/mnist_test.csv")
 
-        x_train = train_data.iloc[:, 1:].values.astype("float32") / 255
-        y_train = train_data.iloc[:, 0].values
-        x_test = test_data.iloc[:, 1:].values.astype("float32") / 255
-        y_test = test_data.iloc[:, 0].values
+    x_train = train_data.iloc[:, 1:].values.astype("float32") / 255
+    y_train = train_data.iloc[:, 0].values
+    x_test = test_data.iloc[:, 1:].values.astype("float32") / 255
+    y_test = test_data.iloc[:, 0].values
 
-        y_train_one_hot = np.eye(10)[y_train]
+    y_train_one_hot = np.eye(10)[y_train]
 
-        training_data = [
-            (x.reshape(-1, 1), y.reshape(-1, 1))
-            for x, y in zip(x_train, y_train_one_hot)
-        ]
-        test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
+    training_data = [
+        (x.reshape(-1, 1), y.reshape(-1, 1)) for x, y in zip(x_train, y_train_one_hot)
+    ]
+    test_data = [(x.reshape(-1, 1), y) for x, y in zip(x_test, y_test)]
 
-        return training_data, test_data
+    return training_data, test_data
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Choose train or run")
@@ -60,6 +66,7 @@ if __name__ == "__main__":
         net = NN([784, 60, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, 10, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
+        net.plot()
 
     elif args.mode == "run":
         net = load_weights_and_biases("weights_and_biases.pkl")
@@ -67,7 +74,7 @@ if __name__ == "__main__":
     examples = [f"../data/testSample/img_{i}.jpg" for i in range(1, 350)]
     gr.Interface(
         fn=predict_digit,
-        inputs=gr.Image(type="numpy", image_mode="L"),
+        inputs=gr.Image(type="numpy", image_mode="L", sources="upload"),
         outputs=gr.Label(num_top_classes=1),
         examples=examples,
         examples_per_page=50,

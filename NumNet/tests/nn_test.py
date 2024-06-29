@@ -1,9 +1,10 @@
 import copy
+import random
 import unittest
-import pytest
+
 import numpy as np
 import pandas as pd
-import random
+import pytest
 
 from numnet.nn import NN, cost_derivative, sigmoid, sigmoid_prime
 
@@ -41,17 +42,23 @@ class TestNN(unittest.TestCase):
         bias_after = self.net.b
         for layer_number, (before, after) in enumerate(zip(bias_before, bias_after)):
             with self.subTest(layer=layer_number):
-                self.assertFalse(np.array_equal(before, after), f"Bias error in layer {layer_number}")
+                self.assertFalse(
+                    np.array_equal(before, after), f"Bias error in layer {layer_number}"
+                )
 
-            
     def test_weights_change(self):
         weights_before = [copy.deepcopy(weights) for weights in self.net.w]
         self.net.train(self.training_data, 1, 0.3, 1)
         weights_after = self.net.w
-        
-        for layer_number, (before, after) in enumerate(zip(weights_before, weights_after)):
+
+        for layer_number, (before, after) in enumerate(
+            zip(weights_before, weights_after)
+        ):
             with self.subTest(layer=layer_number):
-                self.assertFalse(np.array_equal(before, after), f"Weight error in layer {layer_number}")
+                self.assertFalse(
+                    np.array_equal(before, after),
+                    f"Weight error in layer {layer_number}",
+                )
 
     def test_predict_raises_error_if_input_wrong_size(self):
         a = [1, 2, 3]
@@ -62,7 +69,7 @@ class TestNN(unittest.TestCase):
         self.assertEqual(10, len(self.net.predict(a)))
 
     def test_sample_order_doesnt_matter(self):
-        x_batch = np.hstack([x for x, _ in self.training_data]) 
+        x_batch = np.hstack([x for x, _ in self.training_data])
         n = x_batch.shape[1]
 
         x_all_as, _ = self.net.forward(x_batch)
@@ -75,16 +82,7 @@ class TestNN(unittest.TestCase):
         flag = True
         for i in range(n):
             index = random_index[i]
-            if not np.allclose( x_output[:, index], shuffled_x_output[:, i]):
+            if not np.allclose(x_output[:, index], shuffled_x_output[:, i]):
                 flag = False
                 break
         self.assertTrue(flag)
-
-    def test_sigmoid(self):
-        pass
-
-    def test_sigmoid_prime(self):
-        pass
-
-    def test_mse_prime(self):
-        pass
