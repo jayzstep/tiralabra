@@ -69,6 +69,7 @@ class NN:
             b: lista numpy arrayta, joka layerille alustetaan biasit
             w: lista numpy arrayta, joka layerille alustetaan painot
         + vastavirtaan tarvittavat funktiot
+        epochs/success_rates: plottaamista varten tallennettuna x ja y akselien data
 
     Args:
         layers: listana layereiden neuronien määrät.

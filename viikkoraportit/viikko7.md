@@ -5,4 +5,4 @@ Demotilaisuuteen valmistautumista. Lueskelin koodia ja siistin sitä sieltä tä
 Korjasin UI:n errorin pienellä try/except -lohkolla.
 
 ## Lauantai 2h
-Toteutusdokumentin kirjoittelua, kommenttien siistimistä.
+Toteutusdokumentin kirjoittelua, kommenttien siistimistä. Plottaus lisätty testidokumenttia varten.
