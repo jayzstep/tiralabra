@@ -3,7 +3,7 @@
 ## Ohjelman yleisrakenne
 Ohjelma lataa CSV-tiedostosta MNIST-tietokantaan tallennetut 60 000 kuvaa käsin piirretyistä numeroista ja muuntaa 28x28 pikselin kuvat 784 pituisiksi vektoreiksi.
 Tämän lisäksi ladataan myös 10 000 testaamiseen tarkoitettua kuvaa. Nämä ovat eri kuvia kuin koulutukseen käytetyt kuvat.
-Neuroverkolle annetaan alkuarvoina verkon kerrosten koot. Verkko on yksinkertainen yhden piilokerroksen verkko, joten input-kerros on kokoa 784, piilokerroksen kokoa voi itse hakea, tällä hetkellä sen koko on 60 neuroni ja output-kerros on 10 pituinen vektori, sillä numerot jaotellaan luonnollisesti 10 eri lokeroon. Annetun verkon koon perusteella ohjelma alustaa joka kerrokselle sopivat sattumanvaraiset weight ja bias vektorit, joita lähdetään sitten koulutusvaiheessa päivittämään kohti parempia arvoja. Verkolle voi myös antaa laskennassa käytettäviä aktivaatio- ja error-funktioita. Tämä kyseinen ohjelma käyttää aktivaationa Sigmoidia ja errorina MSE-funktiota(mean square error).
+Neuroverkolle annetaan alkuarvoina verkon kerrosten koot. Verkko on yksinkertainen yhden piilokerroksen verkko, joten input-kerros on kokoa 784, piilokerroksella on 60 neuronia (tätä voi koodista muuttaa) ja output-kerros on 10 pituinen vektori, sillä numerot jaotellaan luonnollisesti 10 eri lokeroon. Annetun verkon koon perusteella ohjelma alustaa joka kerrokselle sopivat sattumanvaraiset weight ja bias vektorit, joita lähdetään sitten koulutusvaiheessa päivittämään kohti parempia arvoja. Verkolle voi myös antaa laskennassa käytettäviä aktivaatio- ja error-funktioita. Tämä kyseinen ohjelma käyttää aktivaationa Sigmoidia ja errorina MSE-funktiota(mean square error).
 
 Verkko koulutetaan ajamalla koko tietokanta verkon läpi useita kertoja, näitä kutsutaan eepokeiksi. Eepokkien määrää voi muuttaa koodissa, tällä hetkellä eepokkien määrä on 30. Koulutus tapahtuu 10 samplen "paketeissa" (aka. mini_batch, tämäkin on koodissa muutettavissa). Koulutuksen voisi toteuttaa yksi sample kerrallaan, mutta tällöin jäisi hyödyntämättä Numpy-kirjaston ja Pythonin varsin hyvin optimoituja matriisien kertolaskualgoritmeja. Koulutuksessa samplepaketti muutetaan matriisiksi, joka kerrotaan kerroksittain weight-vektoreilla ja joka sarakkeelle (eli joka samplelle) lisätään kerroksen bias-arvot, lopuksi joka arvo ajetaan aktivaatiofunktion (Sigmoid) läpi, joka normalisoi arvot 0 ja 1 välille. Lopulta aktivoitu kerroksen output-matriisi toimii inputtina seuraavalle kerrokselle ja prosessi toistetaan.
 
@@ -23,12 +23,14 @@ Minulla oli aluksi toteutettuna GUI, jossa käyttäjä pystyi piirtämään itse
 ## Tekoälyn käyttö
 Tämä oli ensimmäinen kerta, kun käytin tekoälyä aika paljonkin opiskelun tukena. Parhaimmillaan chatGPT onkin mainio sparrauskumppani. Erityisesti projektin alkuvaiheessa jutustelin AI:n kanssa tarvittavasta matematiikasta, kun rakentelin ymmärrystä aiheesta Nielsenin kirjan pohjalta. Strategianani on käyttää prompteja tyyliin "olenko ymmärtänyt oikein että..", eikä kysyä suoraa vastausta. Tällä tyylillä saattaa itsekin oppia jotain. Koodipuolella tekoälyä on mukava käyttää tarkistamaan syntax-asioita (esim Numpyyn liittyviä), jos/kun ne eivät olleet aluksi tuttuja.
 
-## Huonioita
+## Huomioita
 Projekti oli erittäin opettavainen. Oli mukavaa ensimmäisen opiskeluvuoden päätteeksi päästä käyttämään oikeastaan kaikkea oppimaansa samassa projektissa. Pythonia, lineaarialgebra ja muita oheistyökaluja. Lisäksi tuli opeteltua testaamista, joka oli itselle aika uusi asia, sekä laajempaa dokumentointia, jota ei ole tullut harrastettua juurikaan ennen tätä. Oli mukavaa tutustua myös Numpyyn ja muihin ML-työkaluihin. Pakko myöntää että ML-kärpänen pääsi vähän puraisemaan ja luulenpa että tästä projektista, tai sen laajentamisesta voisi olla iloa myös kandin työssä ja siitä eteenpäinkin.
 
 ## Viitteet
 [Michael Nielsenin kirja](http://neuralnetworksanddeeplearning.com/chap1.html)
+
 [3Blue1Brown](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+
 [Neuroverkon testaamisesta](https://www.sebastianbjorkqvist.com/blog/writing-automated-tests-for-neural-networks/)
 
 
