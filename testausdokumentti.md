@@ -8,6 +8,16 @@ pytest
 ## Testikattavuus
 Coveragen raportin mukaan testikattavuus on 81%. Testeistä on jätetty pois triviaalit funktiot, joten kattavuusprosentti on aivan hyvä, vaikkei olekaan 100.
 
+```plaintext
+
+Name           Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------
+numnet/nn.py      93     16     22      2    81%   156->159, 204, 230-235, 246-247, 262-268
+----------------------------------------------------------
+TOTAL             93     16     22      2    81%
+
+```
+
 Coverage raportin voit katsoa `Numnet/` -kansiosta komennoilla
 ```bash
 coverage run --branch -m pytest
