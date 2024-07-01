@@ -1,5 +1,13 @@
-import argparse
+"""
+NumNet numeroiden tunnistaja
 
+Kouluttaa verkon MNIST-tietokannan datalla ja käynnistää GUI:n.
+
+Argumentilla 'train' kouluttaa verkon ja käynnistää sovelluksen.
+Argumentilla 'run' ei kouluta verkkoa uudestaan, käynnistää vain sovelluksen.
+"""
+
+import argparse
 import gradio as gr
 import numpy as np
 import pandas as pd
@@ -9,8 +17,9 @@ from nn import (NN, cost_derivative, load_weights_and_biases,
 
 def predict_digit(digit):
     """
-    Tulkitsee kuvan. Tai ainakin yrittää. argmax poimii output-vektorin korkeimman arvon indexin,
-    joka MNISTin tapauksessa on sopivasti sama kuin korkeimman ennusteen saanut numero.
+    Tulkitsee kuvan UI:ta varten. Tai ainakin yrittää. argmax poimii output-vektorin
+    korkeimman arvon indexin, joka MNISTin tapauksessa on sopivasti sama kuin korkeimman
+    ennusteen saanut numero.
 
     Args:
         digit: GUI:n lähettämä kuvadata, nimetty digit, koska se näkyy input-kentän otsikkona.
@@ -28,6 +37,9 @@ def predict_digit(digit):
 
 
 def load_csv():
+    """
+    Lataa csv-tiedostosta datan ja muuntaa sen verkolle sopivaan muotoon.
+    """
     train_data = pd.read_csv("../data/mnist_train.csv")
     test_data = pd.read_csv("../data/mnist_test.csv")
 
@@ -51,18 +63,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "mode",
         choices=["train", "run"],
-        help="'train' to train and save weights/biases to memory and start the app, 'run' to load weights and biases from memory and start the app.",
+        help=""" 'train' to train and save weights/biases to memory and start the app,
+        'run' to load weights and biases from memory and start the app. """,
     )
     args = parser.parse_args()
 
     if args.mode == "train":
         training_data, test_data = load_csv()
-        # Debuggausta:
-        # training_data = training_data[0:10]
-        # net = NN([784, 50, 10], sigmoid, sigmoid_prime, cost_derivative)
-        # net.train(training_data, 1, 0.3, 10)
-
-        # For real
         net = NN([784, 60, 10], sigmoid, sigmoid_prime, cost_derivative)
         net.train(training_data, 30, 0.3, 10, test_data)
         save_weights_and_biases(net, "weights_and_biases.pkl")
@@ -80,7 +87,8 @@ if __name__ == "__main__":
         examples_per_page=50,
         live=True,
         title="NumNet",
-        description="A Neural Network trained to classify hand written digits. Click a number to present it to the net.",
+        description="""A Neural Network trained to classify hand written digits.
+        Click a number to present it to the net.""",
         article="",
         allow_flagging="never",
     ).launch()

@@ -31,12 +31,20 @@ class TestNN(unittest.TestCase):
         self.net.w_and_b_initializer(layers)
 
     def test_nn_overfits(self):
+        """
+        Varmistaa, että neuroverkko overfittaa pienellä treenisetillä.
+
+        Treenaa verkon ja tarkistaa, että ennustustarkkuus kasvaa.
+        """
         evaluation_before = self.net.evaluate(self.test_data)
         self.net.train(self.training_data, 100, 0.3, 1)
         evaluation_after = self.net.evaluate(self.test_data)
         assert evaluation_after - evaluation_before > 0
 
     def test_biases_change(self):
+        """
+        Varmistaa, että joka kerroksen biasit päivittyvät kouluttaessa.
+        """
         bias_before = [copy.deepcopy(biases) for biases in self.net.b]
         self.net.train(self.training_data, 1, 0.3, 1)
         bias_after = self.net.b
@@ -47,6 +55,9 @@ class TestNN(unittest.TestCase):
                 )
 
     def test_weights_change(self):
+        """
+        Varmistaa, että joka kerroksen painot päivittyvät kouluttaessa.
+        """
         weights_before = [copy.deepcopy(weights) for weights in self.net.w]
         self.net.train(self.training_data, 1, 0.3, 1)
         weights_after = self.net.w
@@ -61,14 +72,23 @@ class TestNN(unittest.TestCase):
                 )
 
     def test_predict_raises_error_if_input_wrong_size(self):
+        """
+        Varmistaa, että predict-funktio herjaa väärän kokoisella inputilla.
+        """
         a = [1, 2, 3]
         self.assertRaises(ValueError, self.net.predict, a)
 
     def test_predict_returns_something_with_right_input(self):
+        """
+        Varmistaa, että predict palauttaa oikean kokoisen outputin.
+        """
         a = self.training_data[0][0]
         self.assertEqual(10, len(self.net.predict(a)))
 
     def test_sample_order_doesnt_matter(self):
+        """
+        Tarkistaa, että samplejen järjestys ei vaikuta verkon outputtiin.
+        """
         x_batch = np.hstack([x for x, _ in self.training_data])
         n = x_batch.shape[1]
 

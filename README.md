@@ -1,6 +1,6 @@
 # Tiralabra
 
-NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 95% tarkkuudella.
+NumNet on neuroverkko, joka tunnistaa käsin piirrettyjä numeroita MNIST-tietokannan datasta noin 97% tarkkuudella.
 
 Mukana myös localhostiin käynnistyvä GUI, jossa voi klikata samplekuvia verkolle tunnistettavaksi.
 
@@ -38,7 +38,7 @@ poetry shell
 cd numnet
 python3 main.py train
 ```
-Tämä myös käynnistää GUI:n localhostiin. Seuraa ruudun ohjeita.
+Tämä myös käynnistää GUI:n localhostiin ja näyttää komean plotin koulutuksen kulusta. Seuraa ruudun ohjeita.
 
 **TAI**
 
@@ -50,7 +50,7 @@ python3 main.py run
 GUI käynnistyy localhostiin, seuraa ruudun ohjeita.
 
 ## Testaus
-Testit voi suorittaa `NumNet` -kansiosta käsin komennolla:
+Testit voi suorittaa `NumNet/` -kansiosta käsin komennolla:
 ```bash
 pytest
 ```

@@ -1,3 +1,8 @@
+"""
+Neuroverkkoluokka ja sen koulutuksessa tarvitsemat funktiot.
+Tallentaa verkon painot ja biasit tiedostoon ja hakee ne sieltä.
+"""
+
 import pickle
 import random
 
@@ -17,20 +22,6 @@ def cost_derivative(output_activations, y):
         cost funktion derivaatta.
     """
     return output_activations - y
-
-
-# def softmax(z):
-#     """
-#     Softmax-funktio output-layerille, tätä ei tosin käytetä, mutta jatkossa -- kuka tietää!
-
-#     Args:
-#         z: output np array
-
-#     Returns:
-#         aktivoitu output layer
-#     """
-#     exp = np.exp(z - np.max(z))
-#     return exp / exp.sum(axis=0)
 
 
 def sigmoid(z):
@@ -64,8 +55,8 @@ class NN:
     Neuroverkolle oma luokka.
 
     Attributes:
-        seed: käytetään vain testauksessa apuna.
-        w_and_b_initializdr:
+        seed: käytetään testauksessa apuna jäädyttämään satunnaisarvot.
+        w_and_b_initializer:
             b: lista numpy arrayta, joka layerille alustetaan biasit
             w: lista numpy arrayta, joka layerille alustetaan painot
         + vastavirtaan tarvittavat funktiot
@@ -89,7 +80,7 @@ class NN:
 
     def w_and_b_initializer(self, layers):
         """
-        Alustaa neuroverkon biasit ja weightit.
+        Alustaa neuroverkon biasit ja weightit satunnaisarvoilla.
 
         Args:
             layers: listana layereiden neuronien määrät
@@ -119,21 +110,23 @@ class NN:
 
     def forward(self, x_batch):
         """
-        Viedään input data verkon läpi. Tallennetaan joka kerrokselta aktivoimattomat (z) ja aktivoidut (a) neuronien
-        outputit.
+        Vie input datan verkon läpi. Tallentaa joka kerrokselta aktivoimattomat (z) ja
+        aktivoidut (a) neuronien outputit.
 
         Args:
             x_batch: training datan sampleja matriisina.
 
         Returns:
-            Kaksi listaa, joissa toisessa aktivoidut neuronit ja toisessa aktivoimattomat per kerros.
+            Kaksi listaa, joissa toisessa aktivoidut neuronit ja toisessa aktivoimattomat per
+            kerros.
         """
 
         a = x_batch
         all_as = [x_batch]  # kerätään layereiden aktivaatiot listaan
         zs = []  # lista aktivoimattomista outputeista
 
-        # forward propagation / viedään samplet verkon läpi, otetaan talteen relevantit vaiheet z ja a
+        # forward propagation / viedään samplet verkon läpi
+        # otetaan talteen relevantit vaiheet z ja a
         for w, b in zip(self.w, self.b):
             z = np.dot(w, a) + b
             zs.append(z)
@@ -144,17 +137,20 @@ class NN:
 
     def train(self, training_data, epochs, learning_rate, batch_size, test_data=None):
         """
-        Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan ensin verkossa eteenpäin.
-        Tästä otetaan talteen vastavirran tarvitsemat arvot. Sen jälkeen eri kerrosten vaiheille lasketaan gradientit
-        lopusta alkuun (tämä on se vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille
-        muutos nabla-muuttujiin. Tämä muutos lisätään (tai vähennetään) nykyisiin weight/bias arvoihin, näin verkko oppii.
+        Kouluttaa neuroverkon. Muodostaa sampleista mini batch -matriiseja, jotka raahataan
+        ensin verkossa eteenpäin. Tästä otetaan talteen vastavirran tarvitsemat arvot.
+        Sen jälkeen eri kerrosten vaiheille lasketaan gradientit lopusta alkuun (tämä on se
+        vastavirta-algoritmi), joiden avulla saadaan laskettua jokaiselle painolle ja biasille
+        muutos nabla-muuttujiin. Tämä muutos lisätään (tai vähennetään) nykyisiin weight/bias
+        arvoihin, näin verkko oppii.
 
         Args:
             training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
             epochs: kuinka monta rundia muhotaan treenidata läpi.
-            learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa suuntaa.
-            batch_size: määrittelee kuinka monta samplea kerrallaan käytetään kouluttamiseen.
-            test_data: Voi antaa testidatan (samanlainen kuin training_data) jos haluaa mitata koulutuksen sujumista.
+            learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa
+                suuntaa. batch_size: määrittelee kuinka monta samplea kerrallaan käytetään
+                kouluttamiseen. test_data: Voi antaa testidatan (samanlainen kuin training_data)
+                jos haluaa mitata koulutuksen sujumista.
         """
         # testausta varten jäädytetään satunnaisarvot:
         if self.seed is not None:
@@ -180,8 +176,8 @@ class NN:
                 w2 = self.w[1]
                 all_as, zs = self.forward(x_batch)
 
-                # backward propagation / vastavirta-algoritmi. Lasketaan gradientit painoille ja biaseille
-                # ja tallennetaan ne nabla-muuttujiin
+                # backward propagation / vastavirta-algoritmi. Lasketaan gradientit painoille
+                # ja biaseille ja tallennetaan ne nabla-muuttujiin
 
                 # output layer:
                 d2 = self.cost_derivative(all_as[-1], y_batch)
@@ -254,7 +250,8 @@ def save_weights_and_biases(model, filename):
 def load_weights_and_biases(filename):
     """
     Lataa tallennetut painot ja biasit, näin verkkoa ei tarvitse joka kerta kouluttaa uudestaan.
-    On myös fiksu siltä osin, että luo juuri oikean kokoisen verkon tsekkaamalla datasta hidden layerille oikean koon.
+    On myös fiksu siltä osin, että luo juuri oikean kokoisen verkon tsekkaamalla datasta hidden
+    layerille oikean koon.
 
     Args:
         filename: tiedosto jossa painot ja biasit sijaitsee
