@@ -146,10 +146,12 @@ class NN:
 
         Args:
             training_data: Lista tupleja (x,y) joissa x yksi sample ja y toivottu lopputulos.
-            epochs: kuinka monta rundia muhotaan treenidata läpi.
+            epochs: kuinka monta kierrosta treenidata käydään läpi kouluttaessa.
             learning_rate: kerroin painojen ja biasin korjaamiselle kohti derivaatan osoittamaa
-                suuntaa. batch_size: määrittelee kuinka monta samplea kerrallaan käytetään
-                kouluttamiseen. test_data: Voi antaa testidatan (samanlainen kuin training_data)
+                suuntaa. 
+            batch_size: määrittelee kuinka monta samplea kerrallaan käytetään
+                kouluttamiseen. 
+            test_data: Voi antaa testidatan (samanlainen kuin training_data)
                 jos haluaa mitata koulutuksen sujumista.
         """
         # testausta varten jäädytetään satunnaisarvot:
