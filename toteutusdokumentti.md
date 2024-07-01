@@ -20,9 +20,9 @@ Koulutuksen jälkeen localhostiin käynnistyy UI, jossa käyttäjä voi kuvia kl
 
 Suorituskyky ei ole neuroverkkojen kannalta kovinkaan olennainen hiottava parametri. Kun verkko on kerran koulutettu, ei sitä tarvitse kouluttaa uudestaan ja käyttö on suht nopeaa. Datan vienti verkon läpi ja luokittelutuloksen saanti vaatii vain muutaman matriisikertolaskun. Koulutusta varten tämä ohjelma on toteutettu hyödyntäen Numpy-kirjaston hyvin optimoituja matriisilaskuja. Koulutuksen voisi toteuttaa myös for-loopilla sample kerrallaan, mutta tällöin matriisilaskun nopeuttavat hyödyt jäävät saamatta.
 
-Yleisesti matriisikertolaskun aikavaatimus on $O(n^3)$ [2] ja elementtikohtaisen matriisilaskun (aktivaatiofunktio) aikavaatimus on $O(n)$ [1]. Neuroverkossa eteenpäin mentäessä nämä lasketaan joka kerroksessa (poislukien input). Vastavirta koostuu samoista operaatioista ja vaatimus myöskin riippuu kerrosten määrästä. Lisäksi lineaarialgebraa käytetään matriisin transpoosin laskemiseen, jonka aikavaatimus on $O(mn) [3].
+Yleisesti matriisikertolaskun aikavaatimus on $O(n^3)$ [2] ja elementtikohtaisen matriisilaskun (aktivaatiofunktio) aikavaatimus on $O(n)$ [1]. Neuroverkossa eteenpäin mentäessä nämä lasketaan joka kerroksessa (poislukien input). Vastavirta koostuu samoista operaatioista ja vaatimus myöskin riippuu kerrosten määrästä. Lisäksi lineaarialgebraa käytetään matriisin transpoosin laskemiseen, jonka aikavaatimus on $O(mn)$ [3].
 
-Luna Lux Fredenslund päätyy artikkelissaan [1] laskelmaan, jossa inputin vieminen neuroverkon läpi vie aikaa $O(n^4) ja vastavirta-algoritmin ollessa huomattavasti hitaampi $O(n^5).
+Luna Lux Fredenslund päätyy artikkelissaan [1] laskelmaan, jossa inputin vieminen neuroverkon läpi vie aikaa $O(n^4)$ ja vastavirta-algoritmin ollessa huomattavasti hitaampi $O(n^5)$.
 
 ## Puutteet ja parannusehdotukset
 
